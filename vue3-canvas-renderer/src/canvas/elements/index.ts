@@ -1,40 +1,49 @@
-import { drawRegion } from './region'
+import type { CanvasNode, Drawing } from '../types'
+import region from './region'
 
-export let drawTypes: any = {
-  region: drawRegion
+export let drawTypes: Record<string, Drawing> = {
+  region
 }
 
-export const getDrawTypekeys = () => {
-  return Object.keys(drawTypes)
-}
-
-export function draw(ctx: CanvasRenderingContext2D, node: any) {
-  if (Array.isArray(node)) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-    node.forEach((item) => drawItem(ctx, item))
-  } else {
-    drawItem(ctx, node)
+export function draw(ctx: CanvasRenderingContext2D, node: CanvasNode | CanvasNode[]) {
+  const isClear = Array.isArray(node)
+  const nodes = isClear ? node : [node]
+  if (isClear) ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+  for (const item of nodes) {
+    const drawing = getDrawing(item)
+    if (drawing && drawing.draw) {
+      drawing.draw(item)
+    } else {
+      // 不存在的类型
+    }
   }
 }
 
-export const drawItem = (ctx: CanvasRenderingContext2D, node: any) => {
-  if (drawTypes[node.type]) {
-    drawTypes[node.type](ctx, node)
-  } else {
-    // console.log(node)
-    // console.log(`不存在的自定义类型: `, node.type)
-  }
+// export const getDrawTypekeys = (): string[] => {
+//   return Object.keys(drawTypes)
+// }
+
+export const getDrawing = (node: CanvasNode) => {
+  if (!isLegalKey(node.type)) return null
+  const drawing: Drawing = drawTypes[node.type]
+  return drawing
 }
 
-export const extendDrawType = (key: string, draw: Function) => {
-  if (drawTypes[key]) return console.log('与现有类型冲突')
+export const extendDrawType = (key: string, draw: Drawing): void => {
+  if (isLegalKey(key)) return console.log('与现有类型冲突')
   drawTypes = Object.assign({}, drawTypes, { [key]: draw })
 }
 
+export const isLegalKey = (key: string): boolean => {
+  return Object.keys(drawTypes).includes(key)
+}
+
 export const isCustomElement = (app: any) => {
+  // const isCustomElement = app.config.compilerOptions.isCustomElement
   app.config.compilerOptions.isCustomElement = (tag: string) => {
-    console.log(getDrawTypekeys(), tag, getDrawTypekeys().includes(tag))
-    return getDrawTypekeys().includes(tag)
+    return isLegalKey(tag)
+    // if (!isCustomElement) return isLegalKey(tag)
+    // return isCustomElement(tag) || isLegalKey(tag)
   }
   return app
 }
