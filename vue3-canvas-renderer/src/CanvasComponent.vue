@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUpdate, onMounted, ref } from 'vue'
-import { createCanvasApp, isCustomElement } from './canvas'
+import { createCanvasApp } from './canvas'
 import RegionDemo from './canvas/elements/region/region-demo.vue'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
@@ -13,7 +13,6 @@ onMounted(() => {
 
     const createApp = createCanvasApp(canvas.value)
     const app = createApp(RegionDemo)
-    isCustomElement(app)
     app.mount(canvas.value)
   }
 })
