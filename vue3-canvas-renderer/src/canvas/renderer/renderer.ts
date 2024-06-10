@@ -1,5 +1,6 @@
 import { createRenderer, type RendererOptions } from 'vue'
 import { draw, isLegalKey, getDrawing } from '../elements'
+import { queueJob } from './scheduler'
 import type { CanvasNode } from '../types'
 
 const defaultNodeOpts = {
@@ -42,7 +43,7 @@ export function createCanvasApp(canvas: HTMLCanvasElement) {
         child.parent = parent
         if (isLegalKey(child.type)) {
           nodes.push(child)
-          draw(ctx, child)
+          // draw(ctx, child)
         }
       }
     },
@@ -87,8 +88,8 @@ export function createCanvasApp(canvas: HTMLCanvasElement) {
         }
       } else {
         el.props[key] = nextValue
-        // el[key] = nextValue
-        draw(ctx, nodes)
+        // draw(ctx, nodes)
+        queueJob(() => draw(ctx, nodes))
       }
     },
     remove: (el: CanvasNode) => {
@@ -107,7 +108,8 @@ export function createCanvasApp(canvas: HTMLCanvasElement) {
         eventListenersMap.delete(el)
       }
 
-      draw(ctx, nodes)
+      // draw(ctx, nodes)
+      queueJob(() => draw(ctx, nodes))
     },
 
     ...defaultNodeOpts
