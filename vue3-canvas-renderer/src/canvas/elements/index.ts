@@ -24,7 +24,11 @@ export function draw(ctx: CanvasRenderingContext2D, node: CanvasNode | CanvasNod
 // }
 
 export const getDrawing = (node: CanvasNode) => {
-  if (!isLegalKey(node.type)) return null
+  if (!isLegalKey(node.type))
+    return {
+      draw: () => {},
+      isHit: () => false
+    }
   const drawing: Drawing = drawTypes[node.type]
   return drawing
 }

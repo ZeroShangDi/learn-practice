@@ -64,8 +64,17 @@ export function createCanvasApp(canvas: HTMLCanvasElement) {
             const x = event.clientX - rect.left
             const y = event.clientY - rect.top
             const drawing = getDrawing(el)
-            if (drawing && drawing.isHit && drawing.isHit(el, x, y)) {
-              nextValue(event, el)
+            if (!drawing || !drawing.isHit) return
+            if (!drawing.isHit(el, x, y)) return
+            // if (drawing.isHit(el, x, y)) {
+            //   nextValue(event, el)
+            // }
+            const eventHits = nodes.filter((node) => drawing.isHit(node, x, y))
+            const eventHit = eventHits.reduce((prev, current) => {
+              return prev.id > current.id ? prev : current
+            })
+            if (el.id === eventHit.id) {
+              nextValue(event, eventHit, eventHits)
             }
           }
           canvas.addEventListener(eventName, newListener)

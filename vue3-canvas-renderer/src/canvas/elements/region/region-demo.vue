@@ -25,11 +25,12 @@ const data = reactive({
   items: mockData()
 })
 
-const onClick = (e, node) => {
+const onClick = (node: any, idx: number) => {
   console.log(node)
+  data.items[idx].color = Random.color()
 }
 
-// setInterval(() => {
+// setTimeout(() => {
 //   data.items = mockData()
 // }, 3000)
 
@@ -38,10 +39,10 @@ const onClick = (e, node) => {
 
 <template>
   <region
-    v-for="item in data.items"
+    v-for="(item, idx) in data.items"
     :key="item.id"
     :points="item.points"
     :color="item.color"
-    @click="onClick"
+    @click="(e, node, nodes) => onClick(node, idx)"
   ></region>
 </template>
