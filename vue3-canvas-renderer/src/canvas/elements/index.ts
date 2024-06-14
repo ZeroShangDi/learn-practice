@@ -45,13 +45,3 @@ export const isLegalKey = (key: string): boolean => {
 export const isCustomElement = (tag: string) => {
   return isLegalKey(tag)
 }
-
-// export const isCustomElement = (app: any) => {
-//   // const isCustomElement = app.config.compilerOptions.isCustomElement
-//   app.config.compilerOptions.isCustomElement = (tag: string) => {
-//     return isLegalKey(tag)
-//     // if (!isCustomElement) return isLegalKey(tag)
-//     // return isCustomElement(tag) || isLegalKey(tag)
-//   }
-//   return app
-// }

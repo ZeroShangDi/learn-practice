@@ -8,5 +8,6 @@ export { isCustomElement, extendDrawType } from './elements'
  *      通过层级已解决, 考虑能是否进一步优化
  * TODO 触发事件之后能否获取对应的data响应式数据?
  *      通过绑定事件时候传入数据下标解决
+ * TODO 增加一个utils函数集, 处理下elements中的引入,
  *
  */
